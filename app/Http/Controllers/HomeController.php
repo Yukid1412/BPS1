@@ -32,6 +32,11 @@ class HomeController extends Controller
     }
     
     public function thread_store(Request $request){
+        $request->validate([
+            'title'=>'required',
+            'body'=>'required',
+            ]);
+        
         $thread = new Thread();
         $thread->user_id = Auth::id();
         $thread->title = $request->title;
@@ -47,6 +52,10 @@ class HomeController extends Controller
     }
     
     public function reply_store(Request $request){
+        $request->validate([
+            'body'=>'required',
+            ]);
+        
         $reply = new Reply();
         $reply->thread_id = $request->thread_id;
         $reply->user_id = Auth::id();
