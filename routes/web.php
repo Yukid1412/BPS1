@@ -19,4 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/index', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+Route::post('/thread_store', [App\Http\Controllers\HomeController::class, 'thread_store'])->name('thread_store');
+Route::get('/thread/{thread}', [App\Http\Controllers\HomeController::class, 'thread'])->name('thread');
+Route::post('/reply_store', [App\Http\Controllers\HomeController::class, 'reply_store'])->name('reply_store');
