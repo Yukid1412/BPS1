@@ -64,4 +64,13 @@ class HomeController extends Controller
         
         return redirect(route('thread', $request->thread_id));
     }
+    
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->categories()->detach();
+        $user->categories()->attach($request->category);
+    }
+    
 }

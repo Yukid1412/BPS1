@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('threads', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->string('title');
-            $table->string('body');
-            $table->integer('delete_flag')->default(0);
+        Schema::create('categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('threads');
+        Schema::dropIfExists('categories');
     }
 };
