@@ -20,3 +20,4 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('in
 Route::post('/thread_store', [App\Http\Controllers\HomeController::class, 'thread_store'])->name('thread_store')->middleware('auth');
 Route::get('/thread/{thread}', [App\Http\Controllers\HomeController::class, 'thread'])->name('thread');
 Route::post('/reply_store', [App\Http\Controllers\HomeController::class, 'reply_store'])->name('reply_store')->middleware('auth');
+Route::post('/thread_delete', [App\Http\Controllers\DeleteController::class, 'thread_delete'])->name('thread_delete');

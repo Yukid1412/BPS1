@@ -21,8 +21,9 @@
                 <div class="card-header">スレッド投稿</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('thread_store') }}">
+
                         @csrf
-                        <label for="title" class="col-form-label">条件（交換or譲渡）</label>
+                        <label for="title" class="col-form-label">品物（アクスタ、シール等）</label>
                         <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}">
                         @error('title')
                         <div class="alert alert-danger">{{ $message }}</div>
@@ -44,12 +45,30 @@
                 <div class="card-header">
                     ID:{{ $thread->id }}<br>
                     ユーザー：{{ $thread->user->name }}<br>
-                    <a href="{{ route('thread', $thread->id) }}">条件：{{ $thread->title }}</a>&nbsp;返信{{ $thread->replies_count }}件
+                @if($thread->delete_flag == 1)
+                    品物名：削除
+                @else
+                    <a href="{{ route('thread', $thread->id) }}">品物名：{{ $thread->title }}</a>&nbsp;返信{{ $thread->replies_count }}件
+                @endif
                 </div>
 
                 <div class="card-body">
+                @if ($thread->delete_flag == 1)
+                この投稿は削除されました。
+                @else    
                     {!! nl2br(e($thread->body)) !!}
+                @endif
                 </div>
+                <br>
+                
+                <div class="text-right">
+                    <form action="{{ route('thread_delete') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $thread->id }}">
+                        <button type="submit" class="btn btn-danger">削除</button>
+                    </form>
+                </div>
+                
             </div>
             <br>
             @endforeach
