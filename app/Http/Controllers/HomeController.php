@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Thread;
 use App\Models\Reply;
+use App\Models\Category;
+use App\Models\Image;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class HomeController extends Controller
 {
@@ -27,8 +31,9 @@ class HomeController extends Controller
     public function index()
     {
         $threads = Thread::withCount('replies')->get();
+        $categories = Category::get();
         
-        return view('index', ['threads' => $threads]);
+        return view('index', ['threads' => $threads, 'categories' => $categories]);
     }
     
     public function thread_store(Request $request){
@@ -39,9 +44,21 @@ class HomeController extends Controller
         
         $thread = new Thread();
         $thread->user_id = Auth::id();
+        $thread->category_id = $request->category_id;
         $thread->title = $request->title;
         $thread->body = $request->body;
         $thread->save();
+        
+        $image = new Image;
+
+        //s3アップロード開始
+        $image1 = $request->file('image');
+        //バケットの`myprefix`フォルダへアップロード
+        $path = Storage::disk('s3')->putFile('/', $image1, 'public');
+        // アップロードした画像のフルパスを取得
+        $image->image_path = Storage::disk('s3')->url($path);
+        $image->thread_id = $thread->id;
+        $image->save();
         
         return redirect(route('index'));
     }

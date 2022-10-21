@@ -42,9 +42,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
+    public function threads(){
+        return $this->hasMany('App\Models\Thread');
+    }
     
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class);
+    public function replies(){
+        return $this->hasMany('App\Models\Reply');
     }
 }

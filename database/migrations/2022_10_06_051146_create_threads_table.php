@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('body');
             $table->integer('delete_flag')->default(0);
             $table->timestamps();
+            $table->bigInteger('category_id')->unsigned();
         });
     }
 
