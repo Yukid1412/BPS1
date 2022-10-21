@@ -48,7 +48,11 @@ class HomeController extends Controller
     
     
     public function thread(Thread $thread){
-        return view('thread', ['thread' => $thread]);
+        if ($thread->delete_flag == 1){
+            return view('deleted_thread');
+        }else{
+            return view('thread', ['thread' => $thread]);
+        }
     }
     
     public function reply_store(Request $request){
