@@ -33,4 +33,12 @@ class DeleteController extends Controller
         
         return redirect()->route('index');
     }
+    
+    public function reply_delete(Request $request){
+        $reply = Reply::find($request->id);
+        $reply->delete_flag = 1;
+        $reply->save();
+        
+        return redirect()->route('index');
+    }
 }

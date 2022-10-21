@@ -43,7 +43,7 @@
                 <div class="card-header">
                     ID:{{ $thread->id }}<br>
                     ユーザー：{{ $thread->user->name }}<br>
-                    <a href="{{ route('thread', $thread->id) }}">条件：{{ $thread->title }}</a>
+                    <a href="{{ route('thread', $thread->id) }}">品物：{{ $thread->title }}</a>
                 </div>
 
                 <div class="card-body">
@@ -56,10 +56,23 @@
                 <div class="card-header">
                     ユーザー：{{ $reply->user->name }}<br>
                 </div>
-                
+                @if ($reply->delete_flag == 1)
+                この返信は削除されました。
+                @else
                 <div class="card-body">
                     {!! nl2br(e($reply->body)) !!}
                 </div>
+                @endif
+                @if ($reply->delete_flag == 1)
+                @else
+                <div class="text-right">
+                    <form action="{{ route('reply_delete') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $reply->id }}">
+                        <button type="submit" class="btn btn-danger">削除</button>
+                    </form>
+                </div>
+                @endif
             </div>
             <br>
             @endforeach

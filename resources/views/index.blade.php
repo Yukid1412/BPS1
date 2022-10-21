@@ -21,9 +21,14 @@
                 <div class="card-header">スレッド投稿</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('thread_store') }}">
+                        <label>
+                        <input type="checkbox" name="checkbox-name" value="1">交換</label>
+                        <label>
+                        <input type="checkbox" name="checkbox-name" value="2" checked>譲渡</label>
+                        <br>
 
                         @csrf
-                        <label for="title" class="col-form-label">品物（アクスタ、シール等）</label>
+                        <label for="title" class="col-form-label">品物名（アクスタ、シール等）</label>
                         <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}">
                         @error('title')
                         <div class="alert alert-danger">{{ $message }}</div>
@@ -48,6 +53,32 @@
                 @if($thread->delete_flag == 1)
                     品物名：削除
                 @else
+                
+                <script type="text/javascript">
+                    function execute() {
+                        var trade = document.sampleForm.menu[0];
+                        var buy = document.sampleForm.menu[1];
+                        var result = document.getElementById("result");
+                        result.innerHTML = "";
+                        var none = true;
+ 
+                        if(trade.checked) {
+                            result.innerHTML = trade.value + "が選択されています。";
+                            none = false;
+                        }
+ 
+                        if(buy.checked) {
+                            result.innerHTML += buy.value + "が選択されています。";
+                            none = false;
+                        }
+ 
+                        if(none) {
+                            result.innerHTML = "項目は何も選択されていません。";
+                        }
+ 
+                    }
+                </script>
+                
                     <a href="{{ route('thread', $thread->id) }}">品物名：{{ $thread->title }}</a>&nbsp;返信{{ $thread->replies_count }}件
                 @endif
                 </div>
@@ -60,7 +91,8 @@
                 @endif
                 </div>
                 <br>
-                
+                @if ($thread->delete_flag == 1)
+                @else
                 <div class="text-right">
                     <form action="{{ route('thread_delete') }}" method="post">
                         @csrf
@@ -68,6 +100,7 @@
                         <button type="submit" class="btn btn-danger">削除</button>
                     </form>
                 </div>
+                @endif
                 
             </div>
             <br>
