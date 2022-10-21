@@ -13,6 +13,7 @@ class Thread extends Model
         'user_id',
         'title',
         'body',
+        'category_id',
     ];
     
     public function user(){
@@ -23,4 +24,11 @@ class Thread extends Model
         return $this->hasMany('App\Models\Reply');
     }
    
+   public function category(){
+        return $this->belongsTo('App\Models\Category');
+    }
+    
+    public function images(){
+        return $this->hasMany('App\Models\Image');
+    }
 }
