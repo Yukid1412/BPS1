@@ -7,6 +7,7 @@ use App\Models\Thread;
 use App\Models\Reply;
 use App\Models\Category;
 use App\Models\Image;
+use App\Models\Mark;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,12 +48,22 @@ class HomeController extends Controller
         $thread->category_id = $request->category_id;
         $thread->title = $request->title;
         $thread->body = $request->body;
+        $thread->mark = $request->mark;
         $thread->save();
         
         $image = new Image;
 
         //s3アップロード開始
         $image1 = $request->file('image');
+        
+        #$image->resize(1080, 700,
+            #function ($constraint) {
+                // 縦横比を保持したままにする
+                #$constraint->aspectRatio();
+                // 小さい画像は大きくしない
+                #$constraint->upsize();
+            #}
+        #);
         //バケットの`myprefix`フォルダへアップロード
         $path = Storage::disk('s3')->putFile('/', $image1, 'public');
         // アップロードした画像のフルパスを取得
@@ -92,6 +103,12 @@ class HomeController extends Controller
 
         $user->categories()->detach();
         $user->categories()->attach($request->category);
+    }
+    
+    public function show(thread $thread)
+    {  
+        $mark=Mark::where('thread_id', $thread->id)->where('user_id', auth()->user()->id)->first();
+        return view('thread.show', compact('thread', 'mark'));
     }
     
 }

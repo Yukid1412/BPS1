@@ -55,7 +55,7 @@
                     品物名：削除
                 @else
                     @foreach($thread->images()->get() as $image)
-                    <img src="{{$image->image_path}}">
+                    <img src="{{$image->image_path}}" width="300" height="300">
                     @endforeach
                     カテゴリー：{{ $thread->category->name }}<br>
                     <a href="{{ route('thread', $thread->id) }}">品物名：{{ $thread->title }}</a>&nbsp;返信{{ $thread->replies_count }}件
@@ -68,18 +68,29 @@
                 この投稿は削除されました。
                 @else    
                     {!! nl2br(e($thread->body)) !!}
+                    <span>
+                    <!-- もし$niceがあれば＝ユーザーが「いいね」をしていたら -->
+                    @auth
+                    @if(Auth::user()->marks->where('thread_id',$thread->id)->first())
+                    <!-- 「いいね」取消用ボタンを表示 -->
+	                    <a href="{{ route('unmark', $thread) }}" class="btn btn-success btn-sm">お気に入り</a>
+                    @else
+                    <!-- まだユーザーが「いいね」をしていなければ、「いいね」ボタンを表示 -->
+	                    <a href="{{ route('mark', $thread) }}" class="btn btn-secondary btn-sm">お気に入り</a>
+                    @endif
+                    @endauth
+                    </span>
                 @endif
                 </div>
                 <br>
-                @if ($thread->delete_flag == 1)
-                @else
-               
+                @if ($thread->delete_flag !== 1)
+                    @if (Auth::id() == $thread->user_id)
                     <form class="text-end" action="{{ route('thread_delete') }}" method="post">
                         @csrf
                         <input type="hidden" name="id" value="{{ $thread->id }}">
                         <button type="submit" class="btn btn-danger">削除</button>
                     </form>
-                
+                    @endif
                 @endif
                 
             </div>

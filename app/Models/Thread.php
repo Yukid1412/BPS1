@@ -31,4 +31,8 @@ class Thread extends Model
     public function images(){
         return $this->hasMany('App\Models\Image');
     }
+ 
+    public function mark() {
+        return $this->hasMany('App\Models\Mark');
+    }
 }
