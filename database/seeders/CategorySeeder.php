@@ -21,6 +21,9 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => '譲渡',
         ]);
+        Category::create([
+            'name' => '交換＆譲渡',
+        ]);
         
     }
 }
