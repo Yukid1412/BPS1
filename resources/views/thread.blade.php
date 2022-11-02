@@ -63,15 +63,17 @@
                     {!! nl2br(e($reply->body)) !!}
                 </div>
                 @endif
-                @if ($reply->delete_flag == 1)
-                @else
-                <div class="text-right">
-                    <form action="{{ route('reply_delete') }}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" value="{{ $reply->id }}">
-                        <button type="submit" class="btn btn-danger">削除</button>
-                    </form>
-                </div>
+                @if (Auth::id() == $reply->user_id)
+                    @if ($reply->delete_flag == 1)
+                    @else
+                    <div class="text-end">
+                        <form action="{{ route('reply_delete') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $reply->id }}">
+                            <button type="submit" class="btn btn-danger">削除</button>
+                        </form>
+                    </div>
+                    @endif
                 @endif
             </div>
             <br>
