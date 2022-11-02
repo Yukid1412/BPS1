@@ -42,34 +42,24 @@ class HomeController extends Controller
             'title'=>'required',
             'body'=>'required',
             ]);
-        
+
         $thread = new Thread();
         $thread->user_id = Auth::id();
         $thread->category_id = $request->category_id;
         $thread->title = $request->title;
         $thread->body = $request->body;
-        $thread->mark = $request->mark;
         $thread->save();
-        
-        $image = new Image;
-
-        //s3アップロード開始
-        $image1 = $request->file('image');
-        
-        #$image->resize(1080, 700,
-            #function ($constraint) {
-                // 縦横比を保持したままにする
-                #$constraint->aspectRatio();
-                // 小さい画像は大きくしない
-                #$constraint->upsize();
-            #}
-        #);
-        //バケットの`myprefix`フォルダへアップロード
-        $path = Storage::disk('s3')->putFile('/', $image1, 'public');
-        // アップロードした画像のフルパスを取得
-        $image->image_path = Storage::disk('s3')->url($path);
-        $image->thread_id = $thread->id;
-        $image->save();
+        $images = $request->file('images');
+        foreach($images as $image2){
+            $image = new Image;
+            //s3アップロード開始
+            //バケットの`myprefix`フォルダへアップロード
+            $path = Storage::disk('s3')->putFile('/', $image2, 'public');
+            // アップロードした画像のフルパスを取得
+            $image->image_path = Storage::disk('s3')->url($path);
+            $image->thread_id = $thread->id;
+            $image->save();
+        }
         
         return redirect(route('index'));
     }

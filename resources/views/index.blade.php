@@ -27,7 +27,7 @@
                         <input type="radio" name="category_id" value= "{{$category->id}}">{{ $category->name }}</label>
                         @endforeach
                         <br>
-                        <input type="file" name="image">
+                        <input type="file" name="images[]" multiple>
                         <br>
                         <label for="title" class="col-form-label">品物名（アクスタ、シール等）</label>
                         <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}">
@@ -54,11 +54,13 @@
                 @if($thread->delete_flag == 1)
                     品物名：削除
                 @else
-                    @foreach($thread->images()->get() as $image)
-                    <img src="{{$image->image_path}}" width="300" height="300">
-                    @endforeach
                     カテゴリー：{{ $thread->category->name }}<br>
-                    <a href="{{ route('thread', $thread->id) }}">品物名：{{ $thread->title }}</a>&nbsp;返信{{ $thread->replies_count }}件
+                    <a href="{{ route('thread', $thread->id) }}">品物名：{{ $thread->title }}</a>&nbsp;　返信{{ $thread->replies->count() }}件
+                    <br>
+                    @foreach($thread->images()->get() as $image)
+                    <img src="{{$image->image_path}}" width="408" height="300">
+                    @endforeach
+                    <br>
                 @endif
                 
                 </div>
@@ -68,21 +70,26 @@
                 この投稿は削除されました。
                 @else    
                     {!! nl2br(e($thread->body)) !!}
+                    <br>
+                    <br>
                     <span>
                     <!-- もし$niceがあれば＝ユーザーが「いいね」をしていたら -->
                     @auth
                     @if(Auth::user()->marks->where('thread_id',$thread->id)->first())
                     <!-- 「いいね」取消用ボタンを表示 -->
-	                    <a href="{{ route('unmark', $thread) }}" class="btn btn-success btn-sm">お気に入り</a>
+	                    <a href="{{ route('unmark', $thread) }}" class="btn btn-success btn-sm">
+	                        お気に入り　{{ $thread->mark->count() }}
+	                    </a>
                     @else
                     <!-- まだユーザーが「いいね」をしていなければ、「いいね」ボタンを表示 -->
-	                    <a href="{{ route('mark', $thread) }}" class="btn btn-secondary btn-sm">お気に入り</a>
+	                    <a href="{{ route('mark', $thread) }}" class="btn btn-outline-secondary btn-sm">
+	                        お気に入り　{{ $thread->mark->count() }}
+	                    </a>
                     @endif
                     @endauth
                     </span>
                 @endif
                 </div>
-                <br>
                 @if ($thread->delete_flag !== 1)
                     @if (Auth::id() == $thread->user_id)
                     <form class="text-end" action="{{ route('thread_delete') }}" method="post">
